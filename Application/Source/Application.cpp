@@ -12,10 +12,23 @@
 #include <stdlib.h>
 
 #include "Scene1.h"
+#include "Scene2.h"
+#include "Scene3.h"
+#include "Scene4.h"
+#include "Scene5.h"
+#include "SceneLight.h"
+#include "SceneLight2.h"
+#include "Assignment.h"
+#include "Scene9.h"
+#include "SceneSkybox.h"
+#include "SceneModel.h"
+#include "SceneText.h"
+#include "Assignment2.h"
+#include "SceneUI.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
-const unsigned int frameTime = 1000 / FPS; // time for each frame
+const float frameTime = 1000.f / FPS; // time for each frame
 
 //Define an error callback
 static void error_callback(int error, const char* description)
@@ -44,6 +57,35 @@ Application::~Application()
 {
 }
 
+unsigned Application::m_width;
+unsigned Application::m_height;
+void resize_callback(GLFWwindow* window, int w, int h)
+{
+	Application::m_width = w;
+	Application::m_height = h;
+	glViewport(0, 0, w, h);
+}
+
+bool Application::IsMousePressed(unsigned short key) //0 - Left, 1 - Right, 2 - Middle
+{
+	return glfwGetMouseButton(m_window, key) != 0;
+}
+
+void Application::GetCursorPos(double* xpos, double* ypos)
+{
+	glfwGetCursorPos(m_window, xpos, ypos);
+}
+
+int Application::GetWindowWidth()
+{
+	return m_width;
+}
+
+int Application::GetWindowHeight()
+{
+	return m_height;
+}
+
 void Application::Init()
 {
 	//Set the error callback
@@ -52,6 +94,7 @@ void Application::Init()
 	//Initialize GLFW
 	if (!glfwInit())
 	{
+		glfwSetWindowSizeCallback(m_window, resize_callback);
 		exit(EXIT_FAILURE);
 	}
 
@@ -64,7 +107,9 @@ void Application::Init()
 
 
 	//Create a window and create its OpenGL context
-	m_window = glfwCreateWindow(800, 600, "Test Window", NULL, NULL);
+	m_width = 800;
+	m_height = 600;
+	m_window = glfwCreateWindow(m_width, m_height, "Test Window", NULL, NULL);
 
 	//If the window couldn't be created
 	if (!m_window)
@@ -95,10 +140,11 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
-	Scene *scene = new Scene1();
+	Scene* scene = new Assignment2();
 	scene->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
+
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
 	{
 		scene->Update(m_timer.getElapsedTime());
